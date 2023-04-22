@@ -20,4 +20,26 @@ export async function signup(req, res) {
     } catch (err) {
         res.status(500).send(err.message)
     }
-}   
+}
+
+export async function signin(req, res) {
+    const { email, password } = req.body
+
+    try {
+        const user = await db.collection("users").findOne({ email })
+        if(!user){
+            return res.status(404).send("E-mail não cadastrado")
+        }
+        const correctPassword = bcrypt.compareSync(password, user.password)
+        if(!correctPassword){
+            return res.status(401).send("Senha incorreta")
+        }
+
+        const token = uuid()
+        await db.collection("sessions").insertOne({token, idUser: user.id})
+        res.status(200).send(token)
+
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
