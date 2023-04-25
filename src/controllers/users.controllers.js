@@ -27,17 +27,17 @@ export async function signin(req, res) {
 
     try {
         const user = await db.collection("users").findOne({ email })
-        if(!user){
+        if (!user) {
             return res.status(404).send("E-mail não cadastrado")
         }
         const correctPassword = bcrypt.compareSync(password, user.password)
-        if(!correctPassword){
+        if (!correctPassword) {
             return res.status(401).send("Senha incorreta")
         }
 
         const token = uuid()
-        await db.collection("sessions").insertOne({token, idUser: user._id})
-        res.status(200).send(token)
+        await db.collection("sessions").insertOne({ token, idUser: user._id })
+        res.status(200).send({ name: user.name, token })
 
     } catch (err) {
         res.status(500).send(err.message)

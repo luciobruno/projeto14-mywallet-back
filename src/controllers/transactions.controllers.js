@@ -25,7 +25,7 @@ export async function newTransaction(req, res) {
     try {
         const user = await db.collection("sessions").findOne({ token })
 
-        await db.collection("transactions").insertOne({ idUser: user.idUser, value, description, type: type, date: dayjs().format("DD-MM") })
+        await db.collection("transactions").insertOne({ idUser: user.idUser, value:value/100, description, type: type, date: dayjs().format("DD/MM") })
         res.sendStatus(201)
 
     } catch (err) {
